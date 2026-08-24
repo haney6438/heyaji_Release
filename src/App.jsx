@@ -130,7 +130,7 @@ function Header() {
 
         <div className="flex items-center gap-3">
           <a
-            href="#download"
+            href="https://github.com/ptyytty/project/releases/download/v1.0.0/HEYAJI.Setup.1.0.0.exe"
             className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold transition-transform hover:-translate-y-0.5"
             style={{ background: C.ink, color: C.yellow }}
           >
@@ -162,7 +162,7 @@ function Header() {
             </a>
           ))}
           <a
-            href="#download"
+            href="https://github.com/ptyytty/project/releases/download/v1.0.0/HEYAJI.Setup.1.0.0.exe"
             onClick={() => setOpen(false)}
             className="mt-3 flex items-center justify-center gap-2 py-3 rounded-full text-sm font-bold"
             style={{ background: C.ink, color: C.yellow }}
@@ -629,7 +629,7 @@ function Hero() {
           </p>
           <div className="flex flex-wrap items-center gap-3 mb-6">
             <a
-              href="#download"
+              href="https://github.com/ptyytty/project/releases/download/v1.0.0/HEYAJI.Setup.1.0.0.exe"
               className="flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-bold transition-transform hover:-translate-y-0.5"
               style={{ background: C.ink, color: C.yellow }}
             >
@@ -1061,7 +1061,7 @@ function DownloadSection() {
               </p>
             </div>
             <a
-              href="#"
+              href="https://github.com/ptyytty/project/releases/download/v1.0.0/HEYAJI.Setup.1.0.0.exe"
               className="px-5 py-2.5 rounded-full text-[13px] font-bold whitespace-nowrap"
               style={{ background: C.yellow, color: C.ink }}
             >
