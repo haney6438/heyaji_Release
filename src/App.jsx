@@ -1,13 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Bell,
+  BellOff,
   Menu,
   X,
   ArrowRight,
   Circle,
   Check,
+  ChevronLeft,
   ChevronRight,
   CalendarDays,
+  Calendar,
+  Trash2,
 } from "lucide-react";
 
 /* ---------------------------------------------------------
@@ -195,74 +199,174 @@ const TABS = [
   { id: "memo", label: "메모", icon: "📝" },
 ];
 
+const DEMO_TODOS = {
+  8: [
+    { id: 1, text: "팀 회의 준비", done: true, priority: "높음" },
+    { id: 2, text: "기획서 수정하기", done: false, priority: "보통" },
+  ],
+  12: [
+    { id: 3, text: "발표 자료 확인", done: false, priority: "높음" },
+  ],
+  15: [
+    { id: 4, text: "프로젝트 기획서 작성", done: true, priority: "높음" },
+    { id: 5, text: "팀원에게 작업 내용 공유", done: false, priority: "보통" },
+    { id: 6, text: "발표 자료 정리", done: false, priority: "낮음" },
+  ],
+  22: [
+    { id: 7, text: "팀 프로젝트 회의", done: false, priority: "높음" },
+  ],
+  27: [
+    { id: 8, text: "최종 결과물 확인", done: false, priority: "보통" },
+  ],
+};
+
 function HubDemo() {
-  const [tab, setTab] =
-   useState("calendar");
+  const [tab, setTab] = useState("calendar");
+  const [selectedDate, setSelectedDate] = useState(15);
+
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+    setTab("todo");
+  };
+
+  const handleCalendarJump = () => {
+    setTab("calendar");
+  };
 
   return (
     <div
       className="w-full rounded-2xl overflow-hidden select-none"
-      style={{ background: "#fff", border: `1px solid ${C.lineStrong}`, boxShadow: "0 30px 60px -20px rgba(28,27,23,0.25)" }}
+      style={{
+        background: "#fff",
+        border: `1px solid ${C.lineStrong}`,
+        boxShadow:
+          "0 30px 60px -20px rgba(28,27,23,0.25)",
+      }}
     >
-      {/* window chrome */}
+      {/* 프로그램 상단 */}
       <div
         className="flex items-center justify-between px-4 py-2.5"
-        style={{ background: C.ink, color: C.yellow }}
+        style={{
+          background: C.ink,
+          color: C.yellow,
+        }}
       >
         <div className="flex items-center gap-2">
           <HubMark size={18} />
-          <span className="text-xs font-bold">해야지 · HEYAJI</span>
+
+          <span className="text-xs font-bold">
+            해야지 · HEYAJI
+          </span>
         </div>
+
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#59584d" }} />
-          <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#59584d" }} />
-          <span className="w-2.5 h-2.5 rounded-full" style={{ background: C.yellow }} />
+          <span
+            className="w-2.5 h-2.5 rounded-full"
+            style={{ background: "#59584d" }}
+          />
+
+          <span
+            className="w-2.5 h-2.5 rounded-full"
+            style={{ background: "#59584d" }}
+          />
+
+          <span
+            className="w-2.5 h-2.5 rounded-full"
+            style={{ background: C.yellow }}
+          />
         </div>
       </div>
 
-      {/* index tab bar */}
-      <div className="flex items-center gap-2 px-3 pt-3" style={{ background: C.cream }}>
+      {/* 인덱스 탭 */}
+      <div
+        className="flex items-center gap-2 px-3 pt-3"
+        style={{ background: C.cream }}
+      >
         <span
           className="px-3 py-1.5 rounded-t-lg text-xs font-bold flex items-center gap-1.5"
-          style={{ background: "#fff", color: C.ink, border: `1px solid ${C.lineStrong}`, borderBottom: "none" }}
+          style={{
+            background: "#fff",
+            color: C.ink,
+            border: `1px solid ${C.lineStrong}`,
+            borderBottom: "none",
+          }}
         >
-          <Circle size={6} fill={C.ink} stroke="none" />
+          <Circle
+            size={6}
+            fill={C.ink}
+            stroke="none"
+          />
+
           인덱스 1
         </span>
-        <span className="text-[11px] pb-2" style={{ color: C.muted }}>
+
+        <span
+          className="text-[11px] pb-2"
+          style={{ color: C.muted }}
+        >
           + 새 인덱스
         </span>
       </div>
 
-      {/* tab selector — 창 선택 */}
-      <div className="flex px-3 gap-1.5 pb-2" style={{ background: "#fff", borderBottom: `1px solid ${C.line}` }}>
+      {/* 창 선택 */}
+      <div
+        className="flex px-3 gap-1.5 pb-2"
+        style={{
+          background: "#fff",
+          borderBottom: `1px solid ${C.line}`,
+        }}
+      >
         {TABS.map(({ id, label, icon }) => {
           const active = tab === id;
+
           return (
             <button
               key={id}
               onClick={() => setTab(id)}
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all"
               style={{
-                background: active ? C.yellow : "transparent",
+                background: active
+                  ? C.yellow
+                  : "transparent",
+
                 color: C.ink,
-                transform: active ? "translateY(-1px)" : "none",
+
+                transform: active
+                  ? "translateY(-1px)"
+                  : "none",
               }}
             >
               <span className="text-sm leading-none">
-                 {icon}
+                {icon}
               </span>
+
               {label}
             </button>
           );
         })}
       </div>
 
-      {/* content pane */}
-      <div className="p-4 md:p-5 min-h-[300px]" style={{ background: "#fff" }} key={tab}>
-        <div className="hub-fade">
-          {tab === "calendar" && (<CalendarPane onJump={() => setTab("todo")} />)}
-          {tab === "todo" && <TodoPane onJump={() => setTab("calendar")} />}
+      {/* 실제 내용 */}
+      <div
+        className="p-4 md:p-5 min-h-[320px]"
+        style={{ background: "#fff" }}
+      >
+        <div className="hub-fade" key={tab}>
+          {tab === "calendar" && (
+            <CalendarPane
+              selectedDate={selectedDate}
+              onSelectDate={handleDateSelect}
+            />
+          )}
+
+          {tab === "todo" && (
+            <TodoPane
+              selectedDate={selectedDate}
+              todos={DEMO_TODOS[selectedDate] || []}
+              onJump={handleCalendarJump}
+            />
+          )}
+
           {tab === "memo" && <MemoPane />}
         </div>
       </div>
@@ -270,258 +374,228 @@ function HubDemo() {
   );
 }
 
-function CalendarPane({ onJump }) {
-  const days = ["일", "월", "화", "수", "목", "금", "토"];
 
-  // 해야지 캘린더 예시
-  const grid = [
-    [null, null, null, null, 1, 2, 3],
-    [4, 5, 6, 7, 8, 9, 10],
-    [11, 12, 13, 14, 15, 16, 17],
-    [18, 19, 20, 21, 22, 23, 24],
-    [25, 26, 27, 28, 29, 30, 31],
-  ];
+function CalendarPane({ selectedDate, onSelectDate }) {
+  const [currentDate, setCurrentDate] = useState(new Date(2026, 7, 1)); // 2026년 8월
 
-  // 일정이나 할 일이 등록된 날짜
-  const marked = {
-    8: true,
-    12: true,
-    15: true,
-    22: true,
-    27: true,
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+
+  // 각 날짜별 점 데이터 예시
+  const dotsData = {
+    1: ["#EAB308"],
+    6: ["#EAB308"],
+    8: ["#EAB308"],
+    11: ["#F43F5E", "#EAB308", "#3B82F6", "#EAB308", "#8B5CF6", "#10B981"],
+    12: ["#EAB308", "#3B82F6", "#F43F5E"],
+    13: ["#EAB308", "#EAB308", "#EAB308", "#EAB308", "#EAB308", "#3B82F6"],
+    14: ["#F43F5E", "#10B981"],
+    15: ["#EAB308", "#F43F5E", "#EAB308"],
+    18: ["#EAB308", "#3B82F6"],
+    22: ["#EAB308"],
+    29: ["#EAB308"],
   };
 
-  const today = 15;
+  const handlePrevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
+  const handleNextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
+
+  // 달력 생성 로직
+  const firstDayOfWeek = new Date(year, month, 1).getDay();
+  const lastDateOfMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthLastDate = new Date(year, month, 0).getDate();
+
+  const calendarDays = [];
+
+  // 이전 달 날짜들
+  for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+    calendarDays.push({
+      day: prevMonthLastDate - i,
+      isCurrentMonth: false,
+    });
+  }
+
+  // 현재 달 날짜들
+  for (let day = 1; day <= lastDateOfMonth; day++) {
+    calendarDays.push({
+      day,
+      isCurrentMonth: true,
+    });
+  }
+
+  // 다음 달 날짜들 (총 42개셀 맞춤)
+  const remainingCells = 42 - calendarDays.length;
+  for (let day = 1; day <= remainingCells; day++) {
+    calendarDays.push({
+      day,
+      isCurrentMonth: false,
+    });
+  }
 
   return (
-    <div>
-      {/* 캘린더 상단 */}
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <p
-            className="text-sm font-bold"
-            style={{ color: C.ink }}
-          >
-            2026년 8월
-          </p>
-
-          <p
-            className="text-[10px] mt-0.5"
-            style={{ color: C.muted }}
-          >
-            일정과 할 일을 한눈에 확인해요
-          </p>
-        </div>
+    <div className="w-full max-w-xs mx-auto p-4 bg-white rounded-3xl font-sans">
+      {/* 캘린더 상단 헤더 */}
+      <div className="flex items-center justify-between mb-4 px-2">
+        <button onClick={handlePrevMonth} className="p-1 hover:bg-gray-100 rounded-full">
+          <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
+        </button>
+        <h2 className="text-xl font-extrabold text-black tracking-tight">
+          {year}년 {month + 1}월
+        </h2>
+        <button onClick={handleNextMonth} className="p-1 hover:bg-gray-100 rounded-full">
+          <ChevronRight className="w-5 h-5 stroke-[2.5]" />
+        </button>
       </div>
 
-      {/* 요일 */}
-      <div className="grid grid-cols-7 gap-1 text-center">
-        {days.map((d, i) => (
+      {/* 오늘 버튼 */}
+      <div className="flex justify-end mb-3">
+        <button 
+          onClick={() => onSelectDate(27)}
+          className="px-3.5 py-1 bg-[#FFE81A] hover:bg-[#fada08] text-black text-xs font-bold rounded-full shadow-sm transition-all"
+        >
+          오늘
+        </button>
+      </div>
+
+      {/* 요일 헤더 */}
+      <div className="grid grid-cols-7 text-center text-sm font-semibold mb-2">
+        {daysOfWeek.map((day, idx) => (
           <div
-            key={d}
-            className="text-[10px] font-bold py-1"
-            style={{
-              color:
-                i === 0
-                  ? "#E05252"
-                  : i === 6
-                  ? "#4A8FD8"
-                  : C.muted,
-            }}
+            key={day}
+            className={
+              idx === 0 ? "text-red-500" : idx === 6 ? "text-blue-500" : "text-black"
+            }
           >
-            {d}
+            {day}
           </div>
         ))}
+      </div>
 
-        {/* 날짜 */}
-        {grid.flat().map((d, i) => {
-          const isToday = d === today;
-          const hasItem = d && marked[d] === true;
+      {/* 날짜 그리드 */}
+      <div className="grid grid-cols-7 text-center gap-y-1">
+        {calendarDays.map((item, index) => {
+          const { day, isCurrentMonth } = item;
+          const isToday = isCurrentMonth && day === 27; // 이미지 기준 27일 강조
+          const dayOfWeek = index % 7;
+          const dots = isCurrentMonth ? dotsData[day] || [] : [];
+
+          let textColor = "text-black font-semibold";
+          if (!isCurrentMonth) textColor = "text-gray-300 font-normal";
+          else if (dayOfWeek === 0) textColor = "text-red-500 font-semibold";
+          else if (dayOfWeek === 6) textColor = "text-blue-500 font-semibold";
 
           return (
-            <button
-              key={i}
-              onClick={() => d && onJump()}
-              disabled={!d}
-              className="aspect-square rounded-lg flex flex-col items-center justify-center gap-0.5 text-[11px] transition-transform hover:-translate-y-0.5"
-              style={{
-                background: isToday
-                  ? C.yellow
-                  : "transparent",
-
-                color:
-                  d === null
-                    ? "transparent"
-                    : i % 7 === 0
-                    ? "#E05252"
-                    : i % 7 === 6
-                    ? "#4A8FD8"
-                    : C.ink,
-
-                fontWeight: isToday ? 800 : 500,
-
-                cursor: d
-                  ? "pointer"
-                  : "default",
-              }}
+            <div
+              key={index}
+              onClick={() => isCurrentMonth && onSelectDate(day)}
+              className="flex flex-col items-center justify-start min-h-[48px] cursor-pointer py-0.5"
             >
-              <span>{d || "-"}</span>
+              {/* 날짜 숫자를 감싸는 원 */}
+              <div
+                className={`w-8 h-8 flex items-center justify-center rounded-full text-sm transition-all ${
+                  isToday
+                    ? "bg-[#FFE81A] font-extrabold text-black"
+                    : "hover:bg-gray-100"
+                } ${textColor}`}
+              >
+                {day}
+              </div>
 
-              {/* 일정/할 일이 있으면 항상 점으로 표시 */}
-              {hasItem && (
-                <span
-                  className="w-1 h-1 rounded-full"
-                  style={{
-                    background: C.ink,
-                  }}
-                />
+              {/* 일정 표시 점(Dot)들 */}
+              {dots.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-0.5 max-w-[28px] mt-0.5">
+                  {dots.map((color, colorIdx) => (
+                    <span
+                      key={colorIdx}
+                      className="w-1.5 h-1.5 rounded-full inline-block"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                </div>
               )}
-            </button>
+            </div>
           );
         })}
       </div>
-
-      <p
-        className="text-[11px] mt-3"
-        style={{ color: C.muted }}
-      >
-        날짜를 선택하면 해당 날짜의 할 일을 확인할 수 있어요.
-      </p>
     </div>
   );
 }
 
+/* ---------------------------------------------------------
+   TodoPane
+--------------------------------------------------------- */
+function TodoPane({ selectedDate, todos: initialTodos = [], onJump }) {
+  const [todos, setTodos] = useState(
+    initialTodos.length > 0
+      ? initialTodos  
+      : [
+          { id: 1, text: "", time: "00:00" },
+          { id: 2, text: "", time: "00:00" },
+          { id: 3, text: "", time: "00:00" },
+        ]);
 
-function TodoPane({ onJump }) {
-  const items = [
-    {
-      t: "프로젝트 기획서 작성",
-      done: true,
-    },
-    {
-      t: "팀원에게 작업 내용 공유",
-      done: false,
-    },
-    {
-      t: "캘린더 일정 확인",
-      done: false,
-    },
-    {
-      t: "발표 자료 정리",
-      done: false,
-    },
-  ];
+  useEffect(() => {
+    if (initialTodos.length > 0) {
+      setTodos(initialTodos);
+    }
+  }, [initialTodos]);
 
   return (
-    <div className="grid sm:grid-cols-2 gap-4">
+    <div className="w-full max-w-xs mx-auto p-4 bg-white rounded-3xl font-sans relative">
+      {/* 상단 헤더 */}
+      <div className="relative flex items-center justify-center mb-6">
+        <button
+          onClick={onJump}
+          className="absolute left-0 p-1 text-black hover:bg-gray-100 rounded-lg"
+          aria-label="캘린더로 이동"
+        >
+          <Calendar className="w-6 h-6 stroke-[2]" />
+        </button>
+        <h2 className="text-xl font-extrabold text-black tracking-tight">
+          8월 {selectedDate || 27}일
+        </h2>
+      </div>
 
-      {/* 할 일 목록 */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-
-          <div>
-            <p
-              className="text-sm font-bold"
-              style={{ color: C.ink }}
-            >
-              8월 15일 할 일
-            </p>
-
-            <p
-              className="text-[10px] mt-0.5"
-              style={{ color: C.muted }}
-            >
-              오늘 해야 할 일을 확인해요
-            </p>
-          </div>
-
-          <button
-            onClick={onJump}
-            className="p-1.5 rounded-md"
-            style={{ background: C.cream }}
-            aria-label="캘린더로 이동"
-          >
-            <CalendarDays size={13} />
-          </button>
+      {/* 새 일정 입력 바 */}
+      <div className="flex items-center justify-between pb-3 mb-6 border-b border-gray-200">
+        <div className="flex items-center gap-2">
+          <div className="w-5 h-5 border-2 border-black rounded flex items-center justify-center" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#FFE81A]" />
+          <span className="text-gray-300 font-medium text-sm">새 일정</span>
         </div>
+        <div className="flex items-center gap-2 text-gray-300">
+          <BellOff className="w-5 h-5" />
+          <Trash2 className="w-5 h-5" />
+        </div>
+      </div>
 
-        <ul className="flex flex-col gap-2 mt-3">
+      {/* 타임라인 할 일 리스트 */}
+      <div className="relative pl-3">
+        {/* 세로 타임라인 수직선 */}
+        <div className="absolute left-[21px] top-4 bottom-8 w-[1.5px] bg-gray-200" />
 
-          {items.map((it, i) => (
-            <li
-              key={i}
-              className="flex items-center gap-2 text-[12px]"
-              style={{
-                color: it.done
-                  ? C.muted
-                  : C.ink2,
-              }}
-            >
-              <span
-                className="w-4 h-4 rounded flex items-center justify-center shrink-0"
-                style={{
-                  background: it.done
-                    ? C.ink
-                    : "#fff",
-                  border: `1px solid ${C.lineStrong}`,
-                }}
-              >
-                {it.done && (
-                  <Check
-                    size={10}
-                    color={C.yellow}
-                  />
-                )}
-              </span>
+        <div className="space-y-4">
+          {todos.map((todo) => (
+            <div key={todo.id} className="relative flex items-start gap-3 group">
+              {/* 타임라인 상의 체크박스 */}
+              <div className="z-10 mt-3 bg-white">
+                <div className="w-5 h-5 border-2 border-black rounded flex items-center justify-center" />
+              </div>
 
-              <span
-                style={{
-                  textDecoration: it.done
-                    ? "line-through"
-                    : "none",
-                }}
-              >
-                {it.t}
-              </span>
-            </li>
+              {/* 입력 박스 카드 */}
+              <div className="flex-1 border-2 border-black rounded-lg p-3 flex flex-col justify-between h-24 bg-white">
+                <div className="text-gray-300 text-sm font-medium">할 일</div>
+                <div className="flex items-center justify-end gap-1.5 text-gray-300 text-xs">
+                  <span>{todo.time}</span>
+                  <BellOff className="w-3.5 h-3.5" />
+                  <X className="w-3.5 h-3.5 cursor-pointer hover:text-black" />
+                </div>
+              </div>
+            </div>
           ))}
-
-        </ul>
-
-        <p
-          className="text-[11px] mt-3"
-          style={{ color: C.muted }}
-        >
-          + 새 할 일 추가
-        </p>
+        </div>
       </div>
-
-
-      {/* 오늘의 메모 */}
-      <div
-        className="rounded-xl p-3"
-        style={{
-          background: C.yellowSoft,
-        }}
-      >
-        <p
-          className="text-[11px] font-bold mb-1.5"
-          style={{ color: C.ink }}
-        >
-          오늘의 메모
-        </p>
-
-        <p
-          className="text-[12px] leading-relaxed"
-          style={{ color: C.ink2 }}
-        >
-          팀 회의 전에 기획서 내용
-          다시 확인하기.
-          <br />
-          발표 자료도 함께 준비하기.
-        </p>
-      </div>
-
     </div>
   );
 }
